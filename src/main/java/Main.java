@@ -7,8 +7,12 @@ public class Main {
         while (true) {
          System.out.print("$ ");
          String input = scanner.nextLine();
+         if("exit".equals(input)) {
+             break;
+         }
          System.out.printf("%s: command not found", input);
          System.out.println();
         }
+        scanner.close();
     }
 }
