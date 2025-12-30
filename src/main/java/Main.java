@@ -23,7 +23,7 @@ public class Main {
              if(s.length == 2 && set.contains(s[1])) {
                  System.out.printf("%s is a shell builtin", s[1]);
              } else  {
-                 System.out.printf("%s: command not found", Arrays.stream(s).skip(1).collect(Collectors.joining(" ")));
+                 System.out.printf("%s: not found", Arrays.stream(s).skip(1).collect(Collectors.joining(" ")));
              }
          } else System.out.printf("%s: command not found", input);
          System.out.println();
