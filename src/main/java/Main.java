@@ -56,48 +56,50 @@ public class Main {
         String path = System.getenv("PATH");
         String[] paths = path.split(File.pathSeparator);
         while (true) {
-         System.out.print("$ ");
-         String input = scanner.nextLine();
-         if("exit".equals(input)) {
-             break;
-         }
-         else if(input.startsWith("echo")) {
-             input = input.substring(4);
-             System.out.print(input.trim());
-         } else if (input.startsWith("type")) {
-             String s[] = input.split(" ");
-             if(s.length == 2) {
-                 if(set.contains(s[1])) {
-                     System.out.printf("%s is a shell builtin", s[1]);
-                 } else {
-                     Optional<Path> commandExecutable = findExecutable(s[1], paths);
-                     if(commandExecutable.isPresent())
-                         System.out.printf("%s is %s", s[1], commandExecutable.get());
-                     else
-                         System.out.printf("%s: not found", s[1]);
-                 }
-             } else {
-                 System.out.printf("%s: not found", Arrays.stream(s).skip(1).collect(Collectors.joining(" ")));
-             }
-         } else {
-             String[] commandArgs = input.split(" ");
-             Optional<Path> commandExecutable = findExecutable(commandArgs[0], paths);
-             if(commandExecutable.isPresent()) {
-                ProcessBuilder pb = new ProcessBuilder(commandArgs);
-                pb.redirectErrorStream(true);
-                Process process = pb.start();
-                try (BufferedReader reader = new BufferedReader(
-                         new InputStreamReader(process.getInputStream()))) {
-                     String line;
-                     while ((line = reader.readLine()) != null) {
-                         System.out.println(line);
-                     }
+            System.out.print("$ ");
+            String input = scanner.nextLine();
+            if ("exit".equals(input)) {
+                break;
+            } else if (input.startsWith("echo")) {
+                input = input.substring(4);
+                System.out.println(input.trim());
+            } else if (input.startsWith("type")) {
+                String s[] = input.split(" ");
+                if (s.length == 2) {
+                    if (set.contains(s[1])) {
+                        System.out.printf("%s is a shell builtin", s[1]);
+                        System.out.println();
+                    } else {
+                        Optional<Path> commandExecutable = findExecutable(s[1], paths);
+                        if (commandExecutable.isPresent())
+                            System.out.printf("%s is %s", s[1], commandExecutable.get());
+                        else
+                            System.out.printf("%s: not found", s[1]);
+                        System.out.println();
+                    }
+                } else {
+                    System.out.printf("%s: not found", Arrays.stream(s).skip(1).collect(Collectors.joining(" ")));
+                    System.out.println();
                 }
-             }
-             else
-                System.out.printf("%s: command not found", input);
-         }
-         System.out.println();
+            } else {
+                String[] commandArgs = input.split(" ");
+                Optional<Path> commandExecutable = findExecutable(commandArgs[0], paths);
+                if (commandExecutable.isPresent()) {
+                    ProcessBuilder pb = new ProcessBuilder(commandArgs);
+                    pb.redirectErrorStream(true);
+                    Process process = pb.start();
+                    try (BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(process.getInputStream()))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            System.out.println(line);
+                        }
+                    }
+                } else {
+                    System.out.printf("%s: command not found%n", input);
+                    System.out.println();
+                }
+            }
         }
         scanner.close();
     }
