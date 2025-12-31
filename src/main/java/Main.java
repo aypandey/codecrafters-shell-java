@@ -25,11 +25,16 @@ private static Optional<Path> findExecutable(String command, String[] paths) {
     return Optional.empty();
 }
 
+private static Path handleCd(Path pwd, String arg) {
+    return Paths.get(arg);
+}
+
 public static void main(String[] args) throws Exception {
     Scanner scanner = new Scanner(System.in);
-    Set<String> set = Set.of("exit", "echo", "type", "pwd");
+    Set<String> set = Set.of("exit", "echo", "type", "pwd", "cd");
     String path = System.getenv("PATH");
     String[] paths = path.split(File.pathSeparator);
+    Path pwd = Paths.get("").toAbsolutePath();
     while (true) {
         System.out.print("$ ");
         String input = scanner.nextLine();
@@ -39,9 +44,12 @@ public static void main(String[] args) throws Exception {
             input = input.substring(4);
             System.out.println(input.trim());
         } else if (input.startsWith("pwd")) {
-            Path pwd = Paths.get("").toAbsolutePath();
             System.out.println(pwd);
-        } else if (input.startsWith("type")) {
+        } else if (input.startsWith("cd")) {
+            String[] cdArgs = input.split(" ");
+            pwd = handleCd(pwd, cdArgs[1]);
+        }
+        else if (input.startsWith("type")) {
             String s[] = input.split(" ");
             if (s.length == 2) {
                 if (set.contains(s[1])) {
