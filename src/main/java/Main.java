@@ -12,24 +12,40 @@ import java.util.stream.Stream;
 
 public class Main {
 
-    private static String checkCommand(String command, String[] paths, int i) throws IOException {
-        if(i >= paths.length) {
-            return "0";
-        }
-        Path dir = Paths.get(paths[i]);
-        try (Stream<Path> allFiles = Files.list(dir)) {
-            Optional<Path> commandFile = allFiles
-                    .filter(Files::isRegularFile)
-                    .filter(path -> path.getFileName().toString().equals(command))
-                    .filter(Files::isExecutable)
-                    .findFirst();
-            if (commandFile.isPresent()) {
-                return "1-"+commandFile.get().toString();
-            } else {
-                return checkCommand(command, paths, i+1);
+
+    private static Optional<Path> findExecutable(String command, String[] paths) {
+
+        for (String p : paths) {
+            Path path = Paths.get(p);
+
+            if (Files.isRegularFile(path)
+                    && Files.isExecutable(path)
+                    && path.getFileName().toString().equals(command)) {
+                return Optional.of(path);
+            }
+
+            if (!Files.isDirectory(path)) {
+                continue;
+            }
+
+            try (Stream<Path> files = Files.list(path)) {
+                Optional<Path> match = files
+                        .filter(Files::isRegularFile)
+                        .filter(Files::isExecutable)
+                        .filter(f -> f.getFileName().toString().equals(command))
+                        .findFirst();
+
+                if (match.isPresent()) {
+                    return match;
+                }
+            } catch (IOException ignored) {
+                // skip unreadable dirs
             }
         }
+
+        return Optional.empty();
     }
+
 
     public static void main(String[] args) throws Exception {
         // TODO: Uncomment the code below to pass the first stage
@@ -52,9 +68,9 @@ public class Main {
                  if(set.contains(s[1])) {
                      System.out.printf("%s is a shell builtin", s[1]);
                  } else {
-                     String checkCommand = checkCommand(s[1], paths, 0);
-                     if(checkCommand.startsWith("1"))
-                         System.out.printf("%s is %s", s[1], checkCommand.substring(2));
+                     Optional<Path> commandExecutable = findExecutable(s[1], paths);
+                     if(commandExecutable.isPresent())
+                         System.out.printf("%s is %s", s[1], commandExecutable.get());
                      else
                          System.out.printf("%s: not found", s[1]);
                  }
