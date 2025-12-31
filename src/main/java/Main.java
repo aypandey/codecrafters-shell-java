@@ -25,8 +25,11 @@ private static Optional<Path> findExecutable(String command, String[] paths) {
     return Optional.empty();
 }
 
-private static Path handleCd(Path pwd, String arg) {
-    return Paths.get(arg);
+private static Optional<Path> handleCd(Path pwd, String arg) {
+    Path path = Paths.get(arg);
+    if (!Files.exists(path))
+        return Optional.empty();
+    return Optional.of(path);
 }
 
 public static void main(String[] args) throws Exception {
@@ -47,7 +50,11 @@ public static void main(String[] args) throws Exception {
             System.out.println(pwd);
         } else if (input.startsWith("cd")) {
             String[] cdArgs = input.split(" ");
-            pwd = handleCd(pwd, cdArgs[1]);
+            Optional<Path> cdDir = handleCd(pwd, cdArgs[1]);
+            if(cdDir.isPresent())
+                pwd = cdDir.get();
+            else
+                System.out.println(String.format("cd: %s: No such file or directory", cdArgs[1]));
         }
         else if (input.startsWith("type")) {
             String s[] = input.split(" ");
