@@ -50,7 +50,6 @@ public class Main {
 
 
     public static void main(String[] args) throws Exception {
-        // TODO: Uncomment the code below to pass the first stage
         Scanner scanner = new Scanner(System.in);
         Set<String> set = Set.of("exit", "echo", "type");
         String path = System.getenv("PATH");
@@ -96,7 +95,7 @@ public class Main {
                         }
                     }
                 } else {
-                    System.out.printf("%s: command not found%n", input);
+                    System.out.printf("%s: command not found", input);
                     System.out.println();
                 }
             }
