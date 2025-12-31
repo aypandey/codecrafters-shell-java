@@ -1,5 +1,7 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -77,7 +79,24 @@ public class Main {
              } else {
                  System.out.printf("%s: not found", Arrays.stream(s).skip(1).collect(Collectors.joining(" ")));
              }
-         } else System.out.printf("%s: command not found", input);
+         } else {
+             String[] commandArgs = input.split(" ");
+             Optional<Path> commandExecutable = findExecutable(commandArgs[0], paths);
+             if(commandExecutable.isPresent()) {
+                ProcessBuilder pb = new ProcessBuilder(commandArgs);
+                pb.redirectErrorStream(true);
+                Process process = pb.start();
+                try (BufferedReader reader = new BufferedReader(
+                         new InputStreamReader(process.getInputStream()))) {
+                     String line;
+                     while ((line = reader.readLine()) != null) {
+                         System.out.println(line);
+                     }
+                }
+             }
+             else
+                System.out.printf("%s: command not found", input);
+         }
          System.out.println();
         }
         scanner.close();
