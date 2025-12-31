@@ -83,6 +83,7 @@ public class Main {
              String[] commandArgs = input.split(" ");
              Optional<Path> commandExecutable = findExecutable(commandArgs[0], paths);
              if(commandExecutable.isPresent()) {
+                 commandArgs[0] = commandExecutable.get().toString();
                 ProcessBuilder pb = new ProcessBuilder(commandArgs);
                 pb.redirectErrorStream(true);
                 Process process = pb.start();
