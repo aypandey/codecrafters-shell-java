@@ -160,7 +160,7 @@ public class Main {
                 // Previous character was a backslash - treat current char as literal
                 currentArg.append(c);
                 escaped = false;
-            } else if (c == '\\' && !inDoubleQuote) {
+            } else if (c == '\\' && !inDoubleQuote && !inSingleQuote) {
                 // Backslash outside single quotes - escape next character
                 // (backslashes work in double quotes and unquoted contexts)
                 escaped = true;
