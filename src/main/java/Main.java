@@ -151,11 +151,20 @@ public class Main {
         StringBuilder currentArg = new StringBuilder();
         boolean inSingleQuote = false;
         boolean inDoubleQuote = false;
+        boolean escaped = false;
 
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
 
-            if (c == '\'' && !inDoubleQuote) {
+            if (escaped) {
+                // Previous character was a backslash - treat current char as literal
+                currentArg.append(c);
+                escaped = false;
+            } else if (c == '\\' && !inSingleQuote) {
+                // Backslash outside single quotes - escape next character
+                // (backslashes work in double quotes and unquoted contexts)
+                escaped = true;
+            } else if (c == '\'' && !inDoubleQuote) {
                 // Single quote toggles single quote mode (unless in double quotes)
                 inSingleQuote = !inSingleQuote;
             } else if (c == '"' && !inSingleQuote) {
