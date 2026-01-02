@@ -1,3 +1,4 @@
+private static final String HOME_DIR = System.getenv("HOME");
 private static Optional<Path> findExecutable(String command, String[] paths) {
     for (String p : paths) {
         Path path = Paths.get(p);
@@ -26,6 +27,7 @@ private static Optional<Path> findExecutable(String command, String[] paths) {
 }
 
 private static Optional<Path> handleCd(Path pwd, String arg) {
+    arg = arg.replace("~", HOME_DIR);
     Path path = Paths.get(arg);
     Path target = path.isAbsolute() ? path : pwd.resolve(path);
     if (!Files.exists(target))
