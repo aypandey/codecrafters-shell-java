@@ -150,17 +150,18 @@ public class Main {
         List<String> args = new ArrayList<>();
         StringBuilder currentArg = new StringBuilder();
         boolean inSingleQuote = false;
+        boolean inDoubleQuote = false;
 
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
 
-            if (c == '\'' && !inSingleQuote) {
-                // Start of single quote
-                inSingleQuote = true;
-            } else if (c == '\'' && inSingleQuote) {
-                // End of single quote
-                inSingleQuote = false;
-            } else if (Character.isWhitespace(c) && !inSingleQuote) {
+            if (c == '\'' && !inDoubleQuote) {
+                // Single quote toggles single quote mode (unless in double quotes)
+                inSingleQuote = !inSingleQuote;
+            } else if (c == '"' && !inSingleQuote) {
+                // Double quote toggles double quote mode (unless in single quotes)
+                inDoubleQuote = !inDoubleQuote;
+            } else if (Character.isWhitespace(c) && !inSingleQuote && !inDoubleQuote) {
                 // Whitespace outside quotes - argument separator
                 if (currentArg.length() > 0) {
                     args.add(currentArg.toString());
