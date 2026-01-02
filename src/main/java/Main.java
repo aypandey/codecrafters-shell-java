@@ -27,9 +27,10 @@ private static Optional<Path> findExecutable(String command, String[] paths) {
 
 private static Optional<Path> handleCd(Path pwd, String arg) {
     Path path = Paths.get(arg);
-    if (!Files.exists(path))
+    Path target = path.isAbsolute() ? path : pwd.resolve(path);
+    if (!Files.exists(target))
         return Optional.empty();
-    return Optional.of(path);
+    return Optional.of(target.normalize());
 }
 
 public static void main(String[] args) throws Exception {
@@ -47,7 +48,7 @@ public static void main(String[] args) throws Exception {
             input = input.substring(4);
             System.out.println(input.trim());
         } else if (input.startsWith("pwd")) {
-            System.out.println(pwd);
+            System.out.println(pwd.toAbsolutePath());
         } else if (input.startsWith("cd")) {
             String[] cdArgs = input.split(" ");
             Optional<Path> cdDir = handleCd(pwd, cdArgs[1]);
