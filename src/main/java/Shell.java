@@ -147,7 +147,37 @@ public class Shell {
     }
 
     private String[] parseInput(String input) {
-        return input.trim().split("\\s+");
+        List<String> args = new ArrayList<>();
+        StringBuilder currentArg = new StringBuilder();
+        boolean inSingleQuote = false;
+
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+
+            if (c == '\'' && !inSingleQuote) {
+                // Start of single quote
+                inSingleQuote = true;
+            } else if (c == '\'' && inSingleQuote) {
+                // End of single quote
+                inSingleQuote = false;
+            } else if (Character.isWhitespace(c) && !inSingleQuote) {
+                // Whitespace outside quotes - argument separator
+                if (currentArg.length() > 0) {
+                    args.add(currentArg.toString());
+                    currentArg = new StringBuilder();
+                }
+            } else {
+                // Regular character or character inside quotes
+                currentArg.append(c);
+            }
+        }
+
+        // Add the last argument if any
+        if (currentArg.length() > 0) {
+            args.add(currentArg.toString());
+        }
+
+        return args.toArray(new String[0]);
     }
 
     private void processCommand(String input) throws IOException {
