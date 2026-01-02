@@ -1,11 +1,11 @@
-[![progress-banner](https://backend.codecrafters.io/progress/shell/cf0ee782-289a-4e5b-8180-19815da8cbcc)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+[![progress-banner](https://backend.codecrafters.io/progress/main/cf0ee782-289a-4e5b-8180-19815da8cbcc)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
 
 This is a starting point for Java solutions to the
-["Build Your Own Shell" Challenge](https://app.codecrafters.io/courses/shell/overview).
+["Build Your Own Main" Challenge](https://app.codecrafters.io/courses/main/overview).
 
-In this challenge, you'll build your own POSIX compliant shell that's capable of
-interpreting shell commands, running external programs and builtin commands like
-cd, pwd, echo and more. Along the way, you'll learn about shell command parsing,
+In this challenge, you'll build your own POSIX compliant main that's capable of
+interpreting main commands, running external programs and builtin commands like
+cd, pwd, echo and more. Along the way, you'll learn about main command parsing,
 REPLs, builtin commands, and more.
 
 **Note**: If you're viewing this repo on GitHub, head over to
@@ -13,7 +13,7 @@ REPLs, builtin commands, and more.
 
 # Passing the first stage
 
-The entry point for your `shell` implementation is in `src/main/java/Main.java`.
+The entry point for your `main` implementation is in `src/main/java/Main.java`.
 Study and uncomment the relevant code, and push your changes to pass the first
 stage:
 

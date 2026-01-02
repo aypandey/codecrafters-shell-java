@@ -7,14 +7,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class Shell {
+public class Main {
     private static final String HOME_DIR = System.getenv("HOME");
     private final Set<String> builtinCommands;
     private final Path[] searchPaths;
     private final Map<String, Path> executableCache;
     private Path currentDirectory;
 
-    public Shell() {
+    public Main() {
         this.builtinCommands = Set.of("exit", "echo", "type", "pwd", "cd");
         this.searchPaths = initializeSearchPaths();
         this.executableCache = new HashMap<>();
@@ -233,7 +233,7 @@ public class Shell {
     private static class ExitShellException extends RuntimeException {}
 
     public static void main(String[] args) throws Exception {
-        Shell shell = new Shell();
+        Main shell = new Main();
         shell.run();
     }
 }
