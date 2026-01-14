@@ -10,11 +10,13 @@ import java.util.*;
 public class Main {
     private static final String HOME_DIR = System.getenv("HOME");
     private final Set<String> builtinCommands;
+    private final Set<Character> keyChars;
     private final Path[] searchPaths;
     private final Map<String, Path> executableCache;
     private Path currentDirectory;
 
     public Main() {
+        this.keyChars = Set.of('\"', '\\', '$', '\n');
         this.builtinCommands = Set.of("exit", "echo", "type", "pwd", "cd");
         this.searchPaths = initializeSearchPaths();
         this.executableCache = new HashMap<>();
@@ -152,18 +154,25 @@ public class Main {
         boolean inSingleQuote = false;
         boolean inDoubleQuote = false;
         boolean escaped = false;
+        boolean escapeInDoubleQuote = false;
 
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
-
-            if (escaped) {
+            if(escapeInDoubleQuote) {
+                if(keyChars.contains(c))
+                    currentArg.append(c);
+                else
+                    currentArg.append(input.charAt(i-1))
+                            .append(c);
+                escapeInDoubleQuote = false;
+            } else if (escaped) {
                 // Previous character was a backslash - treat current char as literal
                 currentArg.append(c);
                 escaped = false;
-            } else if (c == '\\' && !inDoubleQuote && !inSingleQuote) {
-                // Backslash outside single quotes - escape next character
-                // (backslashes work in double quotes and unquoted contexts)
+            } else if (c == '\\' && !inSingleQuote && !inDoubleQuote) {
                 escaped = true;
+            } else if (c == '\\' && inDoubleQuote) {
+                escapeInDoubleQuote = true;
             } else if (c == '\'' && !inDoubleQuote) {
                 // Single quote toggles single quote mode (unless in double quotes)
                 inSingleQuote = !inSingleQuote;
